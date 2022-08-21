@@ -1,0 +1,97 @@
+<div class="header"> Compile with Amit</div>
+
+<div class="control-panel">
+  Select Langauge:
+  &nbsp; &nbsp;
+  <%= select_tag :languages, options_for_select(ProgrammingLanguage.all.map { |p| [p.name,p.id] }), class: "languages", onchange: "changeLang(this)" %>
+</div>
+
+<div class="editor" id="editor"></div>
+
+<div class="button-container">
+  <button class="btn" onclick="executeCode()">Run</button>
+</div>
+
+<div class="output"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<%= javascript_tag "const AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
+<script type="text/javascript">
+  let editor;
+
+  window.onload = function() {
+    ace.config.set("basePath", "/ace");
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/ruby");
+  }
+
+  function changeLang(selected_option) {
+    let language = selected_option.options[selected_option.selectedIndex].text.toLowerCase();
+    editor.session.setMode(`ace/mode/${language}`);
+  }
+
+  function executeCode() {
+    $.ajax({
+      url: "/compilers/execute_code",
+      method: "POST",
+      data: {
+        language_id: $("#languages").val(),
+        code: editor.getSession().getValue(),
+        authenticity_token: AUTH_TOKEN
+      },
+      success: function(response) {
+        $(".output").text(response.body)
+      }
+    })
+  }
+</script>
+
+<style type="text/css">
+  *{margin: 0;}
+
+  .header {
+    background: #57a958;
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    padding: 4px;
+    font-family: sans-serif;
+  }
+
+  .control-panel {
+    background: lightgray;
+    text-align: right;
+    padding: 4px;
+    font-family: sans-serif;
+  }
+
+  .languages {
+    background: white;
+    border: 1px solid gray;
+  }
+
+  #editor { height: 400px; }
+
+  .button-container {
+    text-align: right;
+    padding: 14px;
+  }
+
+  .btn {
+    background: #57a958;
+    color: white;
+    padding: 18px;
+    border: 0;
+    cursor:pointer;
+  }
+
+  .output {
+    padding: 4px;
+    border: 2px solid gray;
+    min-height: 100px;
+    width: 99%;
+    resize: none;
+  }
+</style>
