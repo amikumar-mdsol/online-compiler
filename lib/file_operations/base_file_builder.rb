@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FileOperations
   class BaseFileBuilder
     attr_accessor :file_path, :content

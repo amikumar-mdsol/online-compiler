@@ -35,7 +35,7 @@ group :test do
   gem 'rspec-core', '~> 3.10'
   gem 'rspec-mocks', '~> 3.10'
   gem 'rspec-rails', '~> 5.0'
-  gem 'simplecov', '~> 0.21', require: false
   gem 'selenium-webdriver'
+  gem 'simplecov', '~> 0.21', require: false
   gem 'webdrivers'
 end

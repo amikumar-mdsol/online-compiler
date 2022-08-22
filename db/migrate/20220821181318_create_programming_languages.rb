@@ -1,6 +1,11 @@
+# frozen_string_literal: true
+
 class CreateProgrammingLanguages < ActiveRecord::Migration[7.0]
   def change
-    create_table :programming_languages do |t|
+    enable_extension 'uuid-ossp'
+    enable_extension 'pgcrypto'
+
+    create_table :programming_languages, id: :uuid do |t|
       t.string :name
       t.string :command
       t.string :extension
